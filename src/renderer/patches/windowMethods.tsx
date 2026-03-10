@@ -12,13 +12,10 @@ addPatch({
             find: ",setSystemTrayApplications",
             replacement: [
                 {
-                    // eslint-disable-next-line no-useless-escape
                     match: /\i\.window\.(close|minimize|maximize)/g,
                     replace: `TallytopNative.win.$1`
                 },
                 {
-                    // TODO: Fix eslint rule
-                    // eslint-disable-next-line no-useless-escape
                     match: /(focus(\(\i\)){).{0,150}?\.focus\(\i,\i\)/,
                     replace: "$1TallytopNative.win.focus$2"
                 },

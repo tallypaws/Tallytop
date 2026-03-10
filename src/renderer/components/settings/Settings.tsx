@@ -6,8 +6,8 @@
 
 import "./settings.css";
 
-import { ErrorBoundary } from "@vencord/types/components";
-import { Forms, Text } from "@vencord/types/webpack/common";
+import { classNameFactory } from "@vencord/types/api/Styles";
+import { BaseText, Divider, ErrorBoundary } from "@vencord/types/components";
 import { ComponentType } from "react";
 import { Settings, useSettings } from "renderer/settings";
 import { isMac, isWindows } from "renderer/utils";
@@ -16,6 +16,8 @@ import { AutoStartToggle } from "./AutoStartToggle";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
+import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
+import { UserAssetsButton } from "./UserAssets";
 import { VesktopSettingsSwitch } from "./VesktopSettingsSwitch";
 import { WindowsTransparencyControls } from "./WindowsTransparencyControls";
 
@@ -27,6 +29,8 @@ interface BooleanSetting {
     disabled?(): boolean;
     invisible?(): boolean;
 }
+
+export const cl = classNameFactory("vcd-settings-");
 
 export type SettingsComponent = ComponentType<{ settings: typeof Settings.store }>;
 
@@ -82,7 +86,8 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             description: "Adapt the splash window colors to your custom theme",
             defaultValue: true
         },
-        WindowsTransparencyControls
+        WindowsTransparencyControls,
+        UserAssetsButton
     ],
     Behaviour: [
         {
@@ -119,7 +124,15 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             defaultValue: false
         }
     ],
-    Notifications: [NotificationBadgeToggle],
+    Notifications: [
+        NotificationBadgeToggle,
+        {
+            key: "enableTaskbarFlashing",
+            title: "Enable Taskbar Flashing",
+            description: "Flashes the app in your taskbar when you have new notifications.",
+            defaultValue: false
+        }
+    ],
     Miscellaneous: [
         {
             key: "arRPC",
@@ -142,33 +155,32 @@ function SettingsSections() {
     const Settings = useSettings();
 
     const sections = Object.entries(SettingsOptions).map(([title, settings], i, arr) => (
-        <div key={title} className="vcd-settings-category">
-            <Text variant="heading-lg/semibold" color="header-primary" className="vcd-settings-category-title">
+        <div key={title} className={cl("category")}>
+            <BaseText size="lg" weight="semibold" tag="h3" className={cl("category-title")}>
                 {title}
-            </Text>
+            </BaseText>
 
-            <div className="vcd-settings-category-content">
-                {settings.map(Setting => {
-                    if (typeof Setting === "function") return <Setting settings={Settings} />;
+            <div className={cl("category-content")}>
+                {settings.map((Setting, i) => {
+                    if (typeof Setting === "function") return <Setting key={`Custom-${i}`} settings={Settings} />;
 
                     const { defaultValue, title, description, key, disabled, invisible } = Setting;
                     if (invisible?.()) return null;
 
                     return (
                         <VesktopSettingsSwitch
+                            title={title}
+                            description={description}
                             value={Settings[key as any] ?? defaultValue}
                             onChange={v => (Settings[key as any] = v)}
-                            note={description}
                             disabled={disabled?.()}
                             key={key}
-                        >
-                            {title}
-                        </VesktopSettingsSwitch>
+                        />
                     );
                 })}
             </div>
 
-            {i < arr.length - 1 && <Forms.FormDivider className="vcd-settings-category-divider" />}
+            {i < arr.length - 1 && <Divider className={cl("category-divider")} />}
         </div>
     ));
 
@@ -178,14 +190,10 @@ function SettingsSections() {
 export default ErrorBoundary.wrap(
     function SettingsUI() {
         return (
-            <Forms.FormSection>
-                {/* FIXME: Outdated type */}
-                {/* @ts-expect-error Outdated type */}
-                <Text variant="heading-xl/semibold" color="header-primary" className="vcd-settings-title">
-                    Tallytop Settings
-                </Text>
+            <section>
+                <OutdatedVesktopWarning />
                 <SettingsSections />
-            </Forms.FormSection>
+            </section>
         );
     },
     {

@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { mkdirSync } from "fs";
+import { mkdirSync, readFileSync } from "fs";
 import { access, constants as FsConstants, writeFile } from "fs/promises";
+import { TALLYCORD_FILES_DIR } from "main/vencordFilesDir";
 import { join } from "path";
 
-import { TALLYCORD_FILES_DIR, USER_AGENT } from "../constants";
+import { USER_AGENT } from "../constants";
 import { downloadFile, fetchie } from "./http";
 
 const API_BASE = "https://api.github.com";
@@ -73,4 +74,17 @@ export async function ensureVencordFiles() {
     mkdirSync(TALLYCORD_FILES_DIR, { recursive: true });
 
     await Promise.all([downloadVencordFiles(), writeFile(join(TALLYCORD_FILES_DIR, "package.json"), "{}")]);
+}
+
+// TODO: remove this once enough time has passed
+export function vencordSupportsSandboxing() {
+    const supports = readFileSync(join(TALLYCORD_FILES_DIR, "tallycordDesktopMain.js"), "utf-8").includes(
+        "TallycordGetRendererCss"
+    );
+    if (!supports) {
+        console.warn(
+            "⚠️  [TallycordLoader] Tallycord version is outdated and does not support sandboxing. Please update Tallycord to the latest version."
+        );
+    }
+    return supports;
 }
