@@ -7,6 +7,7 @@
 import { app } from "electron";
 import { existsSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
+import { CommandLine } from "./cli";
 
 const tallytopDir = dirname(process.execPath);
 
