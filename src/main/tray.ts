@@ -11,7 +11,7 @@ import { AppEvents } from "./events";
 import { Settings } from "./settings";
 import { resolveAssetPath } from "./userAssets";
 import { clearData } from "./utils/clearData";
-import { downloadVencordFiles } from "./utils/vencordLoader";
+import { downloadVencordFiles } from "./utils/tallycordLoader";
 
 let tray: Tray;
 let trayVariant: "tray" | "trayUnread" = "tray";
