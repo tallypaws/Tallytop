@@ -21,7 +21,7 @@ addPatch({
 
     flashFrame() {
         if (Settings.store.enableTaskbarFlashing) {
-            VesktopNative.win.flashFrame(true);
+            TallytopNative.win.flashFrame(true);
         }
     }
 });

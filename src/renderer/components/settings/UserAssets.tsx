@@ -60,7 +60,7 @@ function Asset({ asset }: { asset: UserAssetType }) {
     const imageRendering = isSplash && settings.splashPixelated ? "pixelated" : "auto";
 
     const onChooseAsset = (value?: null) => async () => {
-        const res = await VesktopNative.fileManager.chooseUserAsset(asset, value);
+        const res = await TallytopNative.fileManager.chooseUserAsset(asset, value);
         if (res === "ok") {
             setVersion(Date.now());
             if (isSplash && value === null) {
@@ -79,7 +79,7 @@ function Asset({ asset }: { asset: UserAssetType }) {
             <div className="vcd-user-assets-asset">
                 <img
                     className="vcd-user-assets-image"
-                    src={`vesktop://assets/${asset}?v=${version}`}
+                    src={`tallytop://assets/${asset}?v=${version}`}
                     alt=""
                     style={{ imageRendering }}
                 />

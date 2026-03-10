@@ -68,7 +68,7 @@
 <body>
     <div class="wrapper">
         <img draggable="false" src="" alt="" role="presentation" />
-        <p>Loading Tallytop...</p>
+        <p id="loading">Loading Tallytop...</p>
         <p id="quote"></p>
     </div>
 </body>
@@ -88,6 +88,10 @@
     ];
     const randomImage = images[Math.floor(Math.random() * images.length)];
     document.querySelector("img").src = `../${randomImage}`;
+
+    if (Math.random() < 0.01) {
+        document.getElementById("loading").textContent = "MENDY!!!!!";
+    }
 
     const quotes = [
         "Never stop doing j.",
