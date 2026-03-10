@@ -15,7 +15,7 @@ import { Settings } from "./settings";
 
 const logger = new Logger("TallytopRPC", "#5865f2");
 
-const arRPC = Vencord.Plugins.plugins["WebRichPresence (arRPC)"] as typeof arRpcPlugin;
+const arRPC = Tallycord.Plugins.plugins["WebRichPresence (arRPC)"] as typeof arRpcPlugin;
 
 onIpcCommand(IpcCommands.RPC_ACTIVITY, async jsonData => {
     if (!Settings.store.arRPC) return;
